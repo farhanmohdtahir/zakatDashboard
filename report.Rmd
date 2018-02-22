@@ -1,0 +1,50 @@
+---
+title: "Zakat Report"
+output: html_document
+params:
+  n: NA
+---
+
+This is the summary for zakat distribution for one semester (September-January 2017) for Pusat Zakat UiTM Shah Alam 
+
+```{r, echo=FALSE}
+#letak code yang plotly pie tu. dari read.csv, sampai habis. cp je dari server.R tu
+#dah pernah tulis kan
+
+```
+all_data <-read.csv("/Users/USER/Desktop/PermohonanZakat1.csv", head=TRUE, sep = ",") 
+
+chosen_asnaf<-table(all_data$Kategori.Asnaf)
+
+chosen_asnaf_dataframe<-as.data.frame(chosen_asnaf)
+
+library(plotly)
+
+chosen_asnaf_pie <- plot_ly(chosen_asnaf_dataframe, labels = ~Var1, values = ~Freq, type = 'pie') %>%
+  layout(title = 'Kategori Asnaf', xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE), yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+legend("top",rownames(chosen_asnaf_pie),fill = asnaf_color, cex=0.6)
+
+chosen_asnaf_pie
+
+
+
+```{r, echo=FALSE}
+#letak code yang plotly bar plot, by 4 campus tu. bukan yang stack plot. yang barplot bycampus tu
+#cp je code dari server.R, dari all_data <- read.csv blablabla tu sampai lah yang layout tu
+
+```
+all_data <- read.csv("/Users/USER/Desktop/PermohonanZakat1.csv", head=TRUE, sep = ",")     
+
+bycampus_table <- table(all_data$Kampus, all_data$Kategori.Asnaf)     
+
+a <- as.data.frame.matrix(bycampus_table)         
+
+bycampus_dataframe <- data.frame(Kampus = row.names(a), a)        
+
+rownames(bycampus_dataframe) <- c()       
+
+plot_ly(bycampus_dataframe, x = ~Kampus, y = ~FAKIR, type = 'bar', name = 'Fakir') %>%
+  add_trace(y = ~FISABILILLAH, name = 'Fisabilillah') %>%
+  add_trace(y = ~MISKIN, name = 'Miskin') %>%
+  layout(yaxis = list(title = 'Count'), barmode = 'group')
